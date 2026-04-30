@@ -1,0 +1,4 @@
+iniconfig==2.3.0
+numpy==2.4.4
+opencv-python==4.13.0.92
+packaging==26.2
