@@ -43,9 +43,33 @@ def sequential():
     print("##################################################################################")
     return failed
 
+def compare_with_sequential():
+    failed = []
+    implementations = ["buffer_by_col", "buffer_by_row", "buffer_by_pixel", "buffer_random_grid"]
+    images = ["lake.bmp", "city.bmp", "coast.bmp", "earth.bmp", "small_sample.bmp", "medium_sample.bmp", "big_sample.bmp", "motorcycle.bmp"]
+    convolutions = ["3x3/id.conv", "3x3/gaussian_like.conv", "3x3/3d.conv", "5x5/id.conv", "5x5/some.conv"]
+    for impl in implementations:
+        print(f"Test of {impl}")
+        for im in images:
+            print(f"{im}:")
+            for conv in convolutions:
+                print(f"{conv}")
+                subprocess.run(f"./build/sequential ./data/image/{im} ./test/result.bmp ./data/convolution/{conv}", shell=True)
+                subprocess.run(f"./build/{impl} ./data/image/{im} ./test/par_result.bmp ./data/convolution/{conv}", shell=True)
+                proc = subprocess.run("cmp -i 54 ./test/par_result.bmp ./test/result.bmp", capture_output=True, text=True, shell=True)
+                if proc.returncode != 0:
+                    print(f"test of {impl} FAILED on {im} with {conv}:")
+                    print(proc.stdout)
+                    failed.append([f"{impl} on {im} with {conv}"])
+                else:
+                    print("test PASSED")
+        print("##################################################################################")
+    return failed
+
 def main():
     failed = []
     failed.extend(sequential())
+    failed.extend(compare_with_sequential())
 
     if failed != []:
         print("\nfailed tests:")
