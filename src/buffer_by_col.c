@@ -2,7 +2,6 @@
 #include <stb_image_write.h>
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 
 #define NTHREADS 4
 
@@ -26,12 +25,15 @@ int main(int argc, char **argv)
     if (convolution_file == NULL)
     {
         fprintf(stderr, "failed to open file with convolution matrix\n");
+        free(data);
         return -2;
     }
     int convolution_size;
     if (fscanf(convolution_file, "%d", &convolution_size) != 1)
     {
         fprintf(stderr, "failed to read from convolution matrix file\n");
+        free(data);
+        fclose(convolution_file);
         return -3;
     }
     int convolution[convolution_size * convolution_size];
@@ -40,14 +42,21 @@ int main(int argc, char **argv)
         if (fscanf(convolution_file, "%d", convolution + i) != 1)
         {
             fprintf(stderr, "failed to read from convolution matrix file\n");
+            free(data);
+            fclose(convolution_file);
             return -3;
         }
     }
 
-    unsigned char *new_data = malloc(sizeof(unsigned char) * x * y * channels);
+    fclose(convolution_file);
 
-    struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC, &start);
+    unsigned char *new_data = malloc(sizeof(unsigned char) * x * y * channels);
+    if (new_data == NULL)
+    {
+        fprintf(stderr, "failed to allocate output buffer\n");
+        free(data);
+        return -11;
+    }
 
     #pragma omp parallel for num_threads(NTHREADS)
     for (int col = 0; col < x; col++)
@@ -84,15 +93,15 @@ int main(int argc, char **argv)
         }
     }
 
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    double diff = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-
     int write_code = stbi_write_bmp(argv[2], x, y, channels, new_data);
+
+    free(data);
+    free(new_data);
+
     if (!write_code)
     {
         fprintf(stderr, "write failed\n");
         return 2;
     }
-    printf("buffer_by_col time, seconds: %.3f\n", diff);
     return 0;
 }

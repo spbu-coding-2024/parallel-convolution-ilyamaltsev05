@@ -2,7 +2,6 @@
 #include <stb_image_write.h>
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 
 int main(int argc, char **argv)
 {
@@ -54,9 +53,6 @@ int main(int argc, char **argv)
         return -11;
     }
 
-    struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
     for (int row = 0; row < y; row++)
     {
         for (int col = 0; col < x; col++)
@@ -90,9 +86,6 @@ int main(int argc, char **argv)
         }
     }
 
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    double diff = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
-
     int write_code = stbi_write_bmp(argv[2], x, y, channels, new_data);
 
     free(data);
@@ -103,6 +96,5 @@ int main(int argc, char **argv)
         fprintf(stderr, "write failed\n");
         return 2;
     }
-    printf("sequential time, seconds: %.3f\n", diff);
     return 0;
 }
