@@ -123,6 +123,11 @@ void *convoluter_function(void *argument)
         free(work->pixels);
         free(work);
 
+        if (res == NULL)
+        {
+            continue;
+        }
+
         pthread_mutex_lock(&carg->to_write->queue_mutex);
         g_queue_push_tail(carg->to_write->queue, res);
         pthread_cond_signal(&carg->to_write->queue_not_empty);

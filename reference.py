@@ -33,7 +33,7 @@ def sequential():
             print(f"{j}:")
             subprocess.run(f"./build/sequential ./data/image/{i} ./test/result.bmp ./data/convolution/{j}", shell=True)
             convolute(f"./data/image/{i}", f"./data/convolution/{j}")
-            proc = subprocess.run("cmp -i 54 ./test/ref.bmp ./test/result.bmp", capture_output=True, text=True, shell=True)
+            proc = subprocess.run("idiff -v ./test/ref.bmp ./test/result.bmp", capture_output=True, text=True, shell=True)
             if proc.returncode != 0:
                 print("test FAILED:")
                 print(proc.stdout)
@@ -56,7 +56,7 @@ def compare_with_sequential():
                 print(f"{conv}")
                 subprocess.run(f"./build/sequential ./data/image/{im} ./test/result.bmp ./data/convolution/{conv}", shell=True)
                 subprocess.run(f"./build/{impl} ./data/image/{im} ./test/par_result.bmp ./data/convolution/{conv}", shell=True)
-                proc = subprocess.run("cmp -i 54 ./test/par_result.bmp ./test/result.bmp", capture_output=True, text=True, shell=True)
+                proc = subprocess.run("idiff -v 54 ./test/par_result.bmp ./test/result.bmp", capture_output=True, text=True, shell=True)
                 if proc.returncode != 0:
                     print(f"test of {impl} FAILED on {im} with {conv}:")
                     print(proc.stdout)

@@ -3,17 +3,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <omp.h>
+#include <time.h>
 
 #define NTHREADS 4
 
 void generate_grid(int *grid, int x, int y)
 {
     srand(time(NULL));
-    for (int cur_y = 0; cur_y < y; cur_y++)
+    for (int i = 0; i < y; i++)
     {
-        for (int cur_x = 0; cur_x < x; cur_x++)
+        for (int j = 0; j < x; j++)
         {
-            grid[cur_y * x + cur_x] = (rand() % NTHREADS);
+            grid[i * x + j] = (rand() % NTHREADS);
         }
     }
 }
@@ -77,6 +78,7 @@ int main(int argc, char **argv)
         fprintf(stderr, "failed to allocate grid\n");
         free(data);
         free(new_data);
+        return -11;
     }
     generate_grid(grid, x, y);
 
@@ -92,18 +94,18 @@ int main(int argc, char **argv)
                 int new_pixel[4] = {0};
                 for (int conv_y = 0; conv_y < convolution_size; conv_y++)
                 {
-                    int cur_y = row - (convolution_size / 2) + conv_y;
-                    if (cur_y < 0 || cur_y >= y)
+                    int i = row - (convolution_size / 2) + conv_y;
+                    if (i < 0 || i >= y)
                         continue;
                     for (int conv_x = 0; conv_x < convolution_size; conv_x++)
                     {
-                        int cur_x = col - (convolution_size / 2) + conv_x;
-                        if (cur_x < 0 || cur_x >= x)
+                        int j = col - (convolution_size / 2) + conv_x;
+                        if (j < 0 || j >= x)
                             continue;
                         for (int channel_i = 0; channel_i < channels; channel_i++)
                         {
                             new_pixel[channel_i] += convolution[conv_y * convolution_size + conv_x] *
-                                                    data[cur_y * x * channels + cur_x * channels + channel_i];
+                                                    data[i * x * channels + j * channels + channel_i];
                         }
                     }
                 }
