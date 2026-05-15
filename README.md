@@ -24,15 +24,26 @@ make test
 
 Эксперимент проводился на машине со следующими
 характеристиками: Linux Mint 22.1, Intel Core i3-7020U (2 cores, 2 threads), 2.30
-GHz, DDR4 8GB RAM и Intel HD Graphics 620, 1.00 GHz; взято среднее арифметическое 5 запусков.
+GHz, DDR4 8GB RAM и Intel HD Graphics 620, 1.00 GHz.
+Проведены замеры для последовательной загрузки-свёртки-записи на разном числе троек
+"входное изображение свёртка изображение для записи". Взято среднее арифметическое 5 запусков.
 
-## lake.bmp: 3x3 id.conv; small_sample.bmp: 5x5 some.conv; medium_sample.bmp: 5x5 id.conv
+## 15 троек
 
-![alt text](test/pipeline1.png)
+![alt text](benchmark_15tasks.png)
 
-## big_sample.bmp: 5x5 some.conv; earth.bmp: 3x3 gaussian_like.conv; coast.bmp: 3x3 3d.conv;
-## city.bmp: 5x5 id.conv
+## 20 троек
 
-![alt text](test/pipeline2.png)
+![alt text](benchmark_20tasks.png)
 
-![alt text](test/experiment3.png)
+## 25 троек
+
+![alt text](benchmark_25tasks.png)
+
+## 27 троек
+
+![alt text](benchmark_27tasks.png)
+
+## 30 троек
+
+![alt text](benchmark_30tasks.png)

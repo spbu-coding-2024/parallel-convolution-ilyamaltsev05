@@ -6,7 +6,7 @@
 
 #define READER_THREADS 1
 
-#define CONVOLUTE_THREADS 2
+#define CONVOLUTE_THREADS 1
 
 #define WRITER_THREADS 1
 
